@@ -74,28 +74,6 @@
                 </app-header>
             </app-header-layout>
 
-            <!-- nav panel -->
-            <app-drawer id="drawer" swipe-open slot="drawer">
-                <app-header-layout has-scrolling-region>
-                    <!-- nav menu -->
-                    <!-- Two way binding to the selected property has been removed due to polymer/issues/4405 -->
-                    <paper-listbox
-                            selected="[[_pageData.page]]"
-                            attr-for-selected="name"
-                            on-iron-activate="_drawerSelected">
-                        <paper-item name="home">
-                            <a href="#/home" name="name">Home</a>
-                        </paper-item>
-                        <paper-item name="archive">
-                            <a href="#/archive" name="name">Archiv</a>
-                        </paper-item>
-                        <paper-item name="search">
-                            <a href="#/search" name="name">Search</a>
-                        </paper-item>
-                    </paper-listbox>
-                </app-header-layout>
-            </app-drawer>
-
             <iron-pages selected="[[selectedPage]]" attr-for-selected="name" fallback-selection="error">
                 <home-page name="home"></home-page>
                 <archive-page name="archive"></archive-page>
