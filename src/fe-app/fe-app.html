@@ -18,7 +18,9 @@
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 
-<link rel="import" href="./home-page.html">
+<link rel="import" href="./admin-page.html">
+<link rel="import" href="./login-page.html">
+<link rel="import" href="./user-page.html">
 
 <dom-module id="fe-app">
     <template>
@@ -41,70 +43,11 @@
             }
 
         </style>
-        <app-route
-                route="{{_route}}"
-                pattern="/:page"
-                data="{{_pageData}}"
-                tail="{{_subRoute}}"></app-route>
-        <app-route
-                route="{{_subRoute}}"
-                pattern="/:id"
-                data="{{_idData}}"></app-route>
-
-        <app-drawer-layout fullbleed force-narrow>
-
-            <app-header-layout>
-                <app-header fixed slot="header">
-                    <app-toolbar>
-                        <paper-icon-button icon="icons:menu" drawer-toggle></paper-icon-button>
-                        <div main-title>App name</div>
-                        <paper-icon-button icon="icons:search"></paper-icon-button>
-                    </app-toolbar>
-                </app-header>
-            </app-header-layout>
-
-            <!-- nav panel -->
-            <app-drawer id="drawer" swipe-open slot="drawer">
-                <app-header-layout has-scrolling-region>
-                    <app-header fixed slot="header">
-                        <div class="avatar-container">
-                            <div class="image"></div>
-                        </div>
-                        <div class="contact-info">
-                            <div class="name">Jonathan</div>
-                            <div class="email">heyfromjonathan@gmail.com</div>
-                        </div>
-                    </app-header>
-
-                    <!-- nav menu -->
-                    <!-- Two way binding to the selected property has been removed due to polymer/issues/4405 -->
-                    <paper-listbox
-                            selected="[[_pageData.page]]"
-                            attr-for-selected="name"
-                            on-iron-activate="_drawerSelected">
-                        <paper-item name="home">
-                            <a href="#/home" name="name">Home</a>
-                        </paper-item>
-                        <paper-item name="favorites">
-                            <a href="#/favorites" name="name">Favorites</a>
-                        </paper-item>
-                        <paper-item name="saved">
-                            <a href="#/saved" name="name">Saved</a>
-                        </paper-item>
-                        <paper-item name="trending">
-                            <a href="#/trending" name="name">Trending</a>
-                        </paper-item>
-                    </paper-listbox>
-                </app-header-layout>
-            </app-drawer>
-
-            <!-- list/detail pages -->
-            <iron-pages selected="[[selectedPage]]" attr-for-selected="name" fallback-selection="error">
-                <home-page name="home"></home-page>
-                <section name="detail">detail</section>
-                <section name="error">error</section>
-            </iron-pages>
-        </app-drawer-layout>
+        <iron-pages selected="[[authenticated]]" attr-for-selected="name" fallback-selection="true">
+            <login-page name="false"></login-page>
+            <admin-page name="admin"></admin-page>
+            <user-page name="true"></user-page>
+        </iron-pages>
     </template>
 
     <script>
@@ -119,15 +62,66 @@
 
             static get properties() {
                 return {
-                    prop1: {
+                    _pageData: Object,
+                    serverUrl: {
                         type: String,
-                        value: 'fe-app'
+                        value: "http://test",
                     },
                     selectedPage: {
                         type: String,
                         computed: 'getSelectedPage(_pageData.page)'
                     }
                 };
+            }
+
+            ready() {
+                super.ready();
+
+                this.handleAjaxCall = this.handleAjaxCall.bind(this);
+                this.handleFormCall = this.handleFormCall.bind(this);
+                this.handleLogin = this.handleLogin.bind(this);
+                this.handleLogout = this.handleLogout.bind(this);
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+
+                this.addEventListener('user-logged-in', this.handleLogin);
+                this.addEventListener('user-logged-out', this.handleLogout);
+
+                // prepare rest calls
+                this.addEventListener('iron-form-presubmit', this.handleFormCall);
+                this.addEventListener('iron-ajax-presend', this.handleAjaxCall);
+            }
+
+            disconnectedCallback() {
+                super.disconnectedCallback();
+
+                this.removeEventListener('user-logged-in', this.handleLogin);
+                this.removeEventListener('user-logged-out', this.handleLogout);
+                this.removeEventListener('iron-form-presubmit', this.handleFormCall);
+                this.removeEventListener('iron-ajax-presend', this.handleAjaxCall);
+            }
+
+            prepareUrl(url) {
+                return url[0] === '/' ? `${this.serverUrl}${url}` : url;
+            }
+
+            handleFormCall(e) {
+                e.path[0].request.url = this.prepareUrl(e.path[0].request.url);
+            }
+
+            handleAjaxCall(e) {
+                console.log(e);
+            }
+
+            handleLogin(e) {
+                const userData = e.detail || {type: 'user', id: 1}; // TODO: remove dummy
+                this.authenticated = userData.type === 'admin' ? 'admin' : 'true';
+            }
+
+            handleLogout() {
+                this.authenticated = 'false';
             }
 
             // noinspection JSMethodCanBeStatic

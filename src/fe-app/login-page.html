@@ -1,0 +1,85 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+
+<link rel="import" href="./catalog-list.html">
+
+<dom-module id="login-page">
+    <template>
+        <style>
+            .page-wrapper {
+                max-width: 1200px;
+                margin: auto;
+                padding: 0 15px;
+            }
+
+            paper-input {
+                max-width: 300px;
+                margin: auto;
+            }
+
+            button {
+                border: 1px solid lightgray;
+                border-radius: 3px;
+                font-size: 20px;
+                line-height: 40px;
+                width: 100px;
+                display: block;
+                margin: 15px auto;
+            }
+        </style>
+        <div class="page-wrapper">
+            <iron-form>
+                <form method="post" action="/login">
+                    <paper-input label="Username" name="username"></paper-input>
+                    <button>Login</button>
+                </form>
+            </iron-form>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class LoginPage extends Polymer.Element {
+            static get is() {
+                return 'login-page';
+            }
+
+            ready() {
+                super.ready();
+
+                this.handleFormResponse = this.handleFormResponse.bind(this);
+                this.handleFormReject = this.handleFormReject.bind(this);
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+
+                this.addEventListener('iron-form-response', this.handleFormResponse);
+                this.addEventListener('iron-form-error', this.handleFormReject);
+            }
+
+            disconnectedCallback() {
+                super.disconnectedCallback();
+
+                this.removeEventListener('iron-form-response', this.handleFormResponse);
+                this.removeEventListener('iron-form-error', this.handleFormReject);
+            }
+
+            handleFormReject() {
+                alert('login failed');
+                this.handleFormResponse({}); // TODO: remove dummy
+            }
+
+            handleFormResponse(e) {
+                const response = e.detail;
+
+                this.dispatchEvent(new CustomEvent('user-logged-in', {detail: response, bubbles: true, composed: true}));
+            }
+        }
+
+        customElements.define(LoginPage.is, LoginPage);
+    </script>
+</dom-module>

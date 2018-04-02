@@ -12,10 +12,16 @@
                 margin: auto;
                 padding: 0 15px;
             }
+
+            paper-icon-button {
+                width: 28px;
+                height: 28px;
+                padding: 2px;
+            }
         </style>
-        <paper-listbox selected="{{value}}" attr-for-selected="value">
+        <paper-listbox disabled="[[disabled]]" selected="{{value}}" attr-for-selected="value">
             <template is="dom-repeat" items="[[_stars]]">
-                <iron-icon icon="icons:[[getStarIcon(item)]]" value$="[[_plusOne(index)]]"></iron-icon>
+                <paper-icon-button disabled="[[disabled]]" icon="icons:[[getStarIcon(item)]]" value$="[[_plusOne(index)]]"></paper-icon-button>
             </template>
         </paper-listbox>
     </template>
@@ -36,6 +42,8 @@
                         type: Array,
                         computed: "getStarsState(value)"
                     },
+
+                    disabled: Boolean,
 
                     value: {
                         type: Number,

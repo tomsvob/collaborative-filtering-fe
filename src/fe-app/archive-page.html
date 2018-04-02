@@ -2,7 +2,7 @@
 
 <link rel="import" href="./catalog-list.html">
 
-<dom-module id="home-page">
+<dom-module id="archive-page">
     <template>
         <style>
             .page-wrapper {
@@ -12,7 +12,7 @@
             }
         </style>
         <div class="page-wrapper">
-            <catalog-list list="[[recommended]]" title="Recommended films"></catalog-list>
+            <catalog-list list="[[list]]" title="Rated films"></catalog-list>
         </div>
     </template>
 
@@ -21,20 +21,20 @@
          * @customElement
          * @polymer
          */
-        class HomePage extends Polymer.Element {
+        class ArchivePage extends Polymer.Element {
             static get is() {
-                return 'home-page';
+                return 'archive-page';
             }
 
             static get properties() {
                 return {
-                    recommended: {
+                    list: {
                         type: Array,
                         value: function () {
                             return [
-                                {name: 'Film1', id: 1,},
-                                {name: 'Film2', id: 2,},
-                                {name: 'Film3', id: 3,},
+                                {name: 'Film 4', id: 4, rate: 1,},
+                                {name: 'Film 5', id: 5, rate: 3,},
+                                {name: 'Film 6', id: 6, rate: 5,},
                             ];
                         },
                     }
@@ -42,6 +42,6 @@
             }
         }
 
-        customElements.define(HomePage.is, HomePage);
+        customElements.define(ArchivePage.is, ArchivePage);
     </script>
 </dom-module>

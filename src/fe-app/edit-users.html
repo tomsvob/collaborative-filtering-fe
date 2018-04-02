@@ -1,0 +1,64 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+
+<link rel="import" href="./catalog-list.html">
+
+<dom-module id="admin-page">
+    <template>
+        <style>
+            .page-wrapper {
+                max-width: 1200px;
+                margin: auto;
+                padding: 0 15px;
+            }
+
+            paper-input {
+                max-width: 300px;
+                margin: auto;
+            }
+
+            button {
+                border: 1px solid lightgray;
+                border-radius: 3px;
+                font-size: 20px;
+                line-height: 40px;
+                width: 100px;
+                display: block;
+                margin: 15px auto;
+            }
+        </style>
+        <div class="page-wrapper">
+            <iron-form>
+                <paper-input label="Username" name="username" value="{{username}}"></paper-input>
+                <button>Add</button>
+            </iron-form>
+        </div>
+        <div class="page-wrapper">
+            <iron-list items="[[users]]">
+                <template>
+                    <editable-user data="[[item]]"></editable-user>
+                </template>
+            </iron-list>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class AdminPage extends Polymer.Element {
+            static get is() {
+                return 'admin-page';
+            }
+
+            static get properties() {
+                return {
+                    username: String,
+                };
+            }
+        }
+
+        customElements.define(AdminPage.is, AdminPage);
+    </script>
+</dom-module>

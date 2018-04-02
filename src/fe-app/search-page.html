@@ -1,0 +1,66 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="./catalog-list.html">
+
+<dom-module id="search-page">
+    <template>
+        <style>
+            .page-wrapper {
+                max-width: 1200px;
+                margin: auto;
+                padding: 0 15px;
+            }
+        </style>
+        <div class="page-wrapper">
+            <paper-input label="Search" value="{{searchQuery}}" disabled="[[inputDisabled]]"></paper-input>
+            <catalog-list list="[[searchList]]" title="Found films"></catalog-list>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class SearchPage extends Polymer.Element {
+            static get is() {
+                return 'search-page';
+            }
+
+            static get properties() {
+                return {
+                    inputDisabled: Boolean,
+                    searchQuery: String,
+                    searchList: Array
+                };
+            }
+
+            static get observers() {
+                return [
+                    "search(searchQuery)"
+                ];
+            }
+
+            debouncedSearch(query) {
+                fetch(`/search/${query}`).then((response) => {
+                    // TODO: proper
+                    // this.searchList = JSON.stringify(response);
+                    this.searchList = [
+                        {name: 'A', id: 10,},
+                        {name: 'B', id: 20, rate: 2,},
+                        {name: 'C', id: 30,},
+                    ];
+                }).catch(alert);
+            }
+
+            search(query) {
+                clearTimeout(this.CT);
+
+                this.CT = setTimeout(this.debouncedSearch.bind(this, query), 200);
+            }
+        }
+
+        customElements.define(SearchPage.is, SearchPage);
+    </script>
+</dom-module>

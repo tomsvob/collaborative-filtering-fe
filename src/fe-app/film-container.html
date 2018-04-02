@@ -12,7 +12,7 @@
             }
         </style>
         <paper-card heading="[[data.name]]">
-            <rate-input value="{{data.newRate}}"></rate-input>
+            <rate-input disabled="[[disabled]]" value="{{newRate}}"></rate-input>
         </paper-card>
     </template>
 
@@ -28,23 +28,36 @@
 
             static get properties() {
                 return {
-                    data: Object
-                }
+                    data: Object,
+                    newRate: {
+                        type: Number,
+                        observer: "updateRate",
+                    },
+                    disabled: Boolean,
+                };
             }
 
             static get observers() {
                 return [
-                    "updateRate(data.newRate)"
+                    "newData(data.rate)"
                 ]
+            }
+
+            newData(rate) {
+                this.newRate = rate;
             }
 
             // noinspection JSUnusedGlobalSymbols
             updateRate(newRate) {
                 // noinspection EqualityComparisonWithCoercionJS
                 if (newRate && this.data && this.data.rate != newRate) {
+                    this.disabled = true;
                     const newValue = Number(newRate);
+                    setTimeout(() => {
+                        this.set(['data', 'rate'], newValue);
+                        this.disabled = false;
+                    }, 300);
                     // TODO: proper url
-                    console.log('update rate', this.data.id, newValue);
                     // fetch(['updateRate', this.data.id, newValue].join('/')).then(() => {
                     //     this.set(['data', 'rate'], newValue);
                     // }).catch(alert);
