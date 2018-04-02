@@ -2,26 +2,30 @@
 
 Frontend application for Collaborative filtering project
 
-## Install the Polymer-CLI
+## Install dependencies
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
+prerequisites: yarn (npm package manager client)
+
+```
+$ yarn install
+```
 
 ## Viewing Your Application
 
 ```
-$ polymer serve
+$ yarn serve
 ```
 
 ## Building Your Application
 
 ```
-$ polymer build
+$ yarn polymer build
 ```
 
 This will create builds of your application in the `build/` directory, optimized to be served in production. You can then serve the built versions by giving `polymer serve` a folder to serve from:
 
 ```
-$ polymer serve build/default
+$ yarn polymer serve build/default
 ```
 
 ## Running Tests
