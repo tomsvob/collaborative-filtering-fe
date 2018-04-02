@@ -1,0 +1,44 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="./film-container.html">
+
+<dom-module id="catalog-list">
+    <template>
+        <style>
+            .page-wrapper {
+                max-width: 1200px;
+                margin: auto;
+                padding: 0 15px;
+            }
+        </style>
+        <div class="page-wrapper">
+            <h2>[[title]]</h2>
+            <div>
+                <template is="dom-repeat" items="[[list]]">
+                    <film-container data="[[item]]"></film-container>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class CatalogList extends Polymer.Element {
+            static get is() {
+                return 'catalog-list';
+            }
+
+            static get properties() {
+                return {
+                    list: Array,
+                    title: String,
+                };
+            }
+        }
+
+        customElements.define(CatalogList.is, CatalogList);
+    </script>
+</dom-module>

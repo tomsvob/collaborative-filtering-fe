@@ -1,0 +1,68 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+
+<link rel="import" href="./film-container.html">
+
+<dom-module id="rate-input">
+    <template>
+        <style>
+            .page-wrapper {
+                max-width: 1200px;
+                margin: auto;
+                padding: 0 15px;
+            }
+        </style>
+        <paper-listbox selected="{{value}}" attr-for-selected="value">
+            <template is="dom-repeat" items="[[_stars]]">
+                <iron-icon icon="icons:[[getStarIcon(item)]]" value$="[[_plusOne(index)]]"></iron-icon>
+            </template>
+        </paper-listbox>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class RateInput extends Polymer.Element {
+            static get is() {
+                return 'rate-input';
+            }
+
+            static get properties() {
+                return {
+                    _stars: {
+                        type: Array,
+                        computed: "getStarsState(value)"
+                    },
+
+                    value: {
+                        type: Number,
+                        notify: true,
+                        value: 0,
+                    }
+                };
+            }
+
+            getStarsState(value) {
+                let arr = [];
+                for (let i = 0; i < 5; i++) {
+                    arr.push(i < value);
+                }
+
+                return arr;
+            }
+
+            getStarIcon(state) {
+                return state ? 'star' : 'star-border';
+            }
+
+            _plusOne(value) {
+                return value + 1;
+            }
+        }
+
+        customElements.define(RateInput.is, RateInput);
+    </script>
+</dom-module>

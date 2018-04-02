@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "polymer-cli": "^1.6.0"
+  },
+  "scripts": {
+    "serve": "polymer serve"
+  }
+}

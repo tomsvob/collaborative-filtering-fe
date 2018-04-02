@@ -1,0 +1,7 @@
+{
+  "name": "bi-vwm-fe",
+  "short_name": "bi-vwm-fe",
+  "description": "Frontend application for Collaborative filtering project",
+  "start_url": "/",
+  "display": "standalone"
+}
