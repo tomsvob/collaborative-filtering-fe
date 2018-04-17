@@ -30,15 +30,17 @@
                 return {
                     recommended: {
                         type: Array,
-                        value: function () {
-                            return [
-                                {name: 'Film1', id: 1,},
-                                {name: 'Film2', id: 2,},
-                                {name: 'Film3', id: 3,},
-                            ];
-                        },
                     }
                 }
+            }
+
+            ready() {
+                super.ready();
+                fetch(`${SERVER_URL}/film-recommended`)
+                    .then(response => response.json())
+                    .then(list => {
+                        this.recommended = list;
+                    });
             }
         }
 
