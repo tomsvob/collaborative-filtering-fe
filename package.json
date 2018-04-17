@@ -3,6 +3,8 @@
     "polymer-cli": "^1.6.0"
   },
   "scripts": {
-    "serve": "polymer serve"
+    "postinstall": "bower install",
+    "serve": "polymer serve",
+    "build": "polymer build"
   }
 }
