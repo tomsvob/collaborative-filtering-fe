@@ -68,15 +68,18 @@
                 this.removeEventListener('iron-form-error', this.handleFormReject);
             }
 
-            handleFormReject() {
+            handleFormReject(e) {
                 alert('login failed');
-                this.handleFormResponse({}); // TODO: remove dummy
+                console.warn(e);
             }
 
             handleFormResponse(e) {
-                const response = e.detail;
-
-                this.dispatchEvent(new CustomEvent('user-logged-in', {detail: response, bubbles: true, composed: true}));
+                const response = e.detail.response;
+                if (response) {
+                    this.dispatchEvent(new CustomEvent('user-logged-in', {detail: response, bubbles: true, composed: true}));
+                } else {
+                    this.handleFormReject(e);
+                }
             }
         }
 

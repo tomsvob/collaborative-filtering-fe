@@ -27,10 +27,13 @@
                 margin: 15px auto;
             }
         </style>
+        <h1>Admininstartion page</h1>
         <div class="page-wrapper">
             <iron-form>
-                <paper-input label="Username" name="username" value="{{username}}"></paper-input>
-                <button>Add</button>
+                <form method="post" action="/add-user">
+                    <paper-input label="Username" name="username"></paper-input>
+                    <button>Add</button>
+                </form>
             </iron-form>
         </div>
         <div class="page-wrapper">
@@ -54,8 +57,17 @@
 
             static get properties() {
                 return {
-                    username: String,
+                    users: Array,
                 };
+            }
+
+            ready() {
+                super.ready();
+                this.loadUsers();
+            }
+
+            loadUsers() {
+                fetch(`${SERVER_URL}/users`).then(res => res.json()).then(users => {this.users = users});
             }
         }
 

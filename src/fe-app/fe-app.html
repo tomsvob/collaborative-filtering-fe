@@ -43,11 +43,15 @@
             }
 
         </style>
-        <iron-pages selected="[[authenticated]]" attr-for-selected="name" fallback-selection="true">
-            <login-page name="false"></login-page>
-            <admin-page name="admin"></admin-page>
-            <user-page name="true"></user-page>
-        </iron-pages>
+        <template is="dom-if" if="[[!userData]]">
+            <login-page></login-page>
+        </template>
+        <template is="dom-if" if="[[userData]]">
+            <iron-pages selected="[[userData.userType]]" attr-for-selected="name">
+                <user-page name="USER"></user-page>
+                <admin-page name="ADMIN"></admin-page>
+            </iron-pages>
+        </template>
     </template>
 
     <script>
@@ -70,7 +74,15 @@
                     selectedPage: {
                         type: String,
                         computed: 'getSelectedPage(_pageData.page)'
-                    }
+                    },
+                    authenticated: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    userData: {
+                        type: Object,
+                        value: null,
+                    },
                 };
             }
 
@@ -116,12 +128,11 @@
             }
 
             handleLogin(e) {
-                const userData = e.detail || {type: 'user', id: 1}; // TODO: remove dummy
-                this.authenticated = userData.type === 'admin' ? 'admin' : 'true';
+                this.userData = e.detail;
             }
 
             handleLogout() {
-                this.authenticated = 'false';
+                this.userData = null;
             }
 
             // noinspection JSMethodCanBeStatic
