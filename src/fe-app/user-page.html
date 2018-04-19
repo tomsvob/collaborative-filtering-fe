@@ -50,6 +50,10 @@
                 color: white;
             }
 
+            app-header-layout {
+                z-index: 1;
+            }
+
             .page-wrapper {
                 max-width: 1200px;
                 margin: auto;
@@ -63,6 +67,7 @@
                     <div class="page-wrapper">
                         <app-toolbar>
                             <div main-title>Collaborative filtering</div>
+                            <div class="user-name">[[userData.username]]</div>
                             <paper-icon-button icon="icons:power-settings-new" on-tap="logout"></paper-icon-button>
                         </app-toolbar>
                         <paper-tabs selected="{{selectedPage}}" attr-for-selected="name" scrollable>

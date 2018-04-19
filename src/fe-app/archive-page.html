@@ -30,15 +30,16 @@
                 return {
                     list: {
                         type: Array,
-                        value: function () {
-                            return [
-                                {name: 'Film 4', id: 4, rate: 1,},
-                                {name: 'Film 5', id: 5, rate: 3,},
-                                {name: 'Film 6', id: 6, rate: 5,},
-                            ];
-                        },
                     }
                 }
+            }
+
+            ready() {
+                super.ready();
+                postData(`/film/rated`, {uid: GLOBAL_CONFIG.userData.id})
+                    .then(list => {
+                        this.list = list;
+                    });
             }
         }
 

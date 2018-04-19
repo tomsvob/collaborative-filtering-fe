@@ -1,60 +1,26 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
-<link rel="import" href="../../bower_components/app-route/app-location.html">
-<link rel="import" href="../../bower_components/app-route/app-route.html">
-
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
-
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-
-<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
-
-<link rel="import" href="./admin-page.html">
 <link rel="import" href="./login-page.html">
-<link rel="import" href="./user-page.html">
+<link rel="import" href="./logged-section.html">
 
 <dom-module id="fe-app">
     <template>
         <style>
-            app-drawer-layout:not([narrow]) [drawer-toggle] {
-                display: none;
+            :host {
+                @apply --paper-font-common-base;
             }
-
-            paper-item {
-                height: 54px;
-            }
-
-            paper-item > a {
-                width: 100%;
-                height: 100%;
-                line-height: 54px;
-                text-align: center;
-                text-decoration: none;
-                color: black;
-            }
-
         </style>
         <template is="dom-if" if="[[!userData]]">
             <login-page></login-page>
         </template>
-        <template is="dom-if" if="[[userData]]">
-            <iron-pages selected="[[userData.userType]]" attr-for-selected="name">
-                <user-page name="USER"></user-page>
-                <admin-page name="ADMIN"></admin-page>
-            </iron-pages>
-        </template>
+        <div id="container"></div>
     </template>
 
     <script>
+        window.GLOBAL_CONFIG = window.GLOBAL_CONFIG || {};
+        const userDataString = localStorage.getItem("VWM_UserData");
+        GLOBAL_CONFIG.userData = userDataString ? JSON.parse(userDataString) : null;
+
         /**
          * @customElement
          * @polymer
@@ -67,21 +33,16 @@
             static get properties() {
                 return {
                     _pageData: Object,
-                    serverUrl: {
-                        type: String,
-                        value: window.SERVER_URL,
-                    },
-                    selectedPage: {
-                        type: String,
-                        computed: 'getSelectedPage(_pageData.page)'
-                    },
                     authenticated: {
                         type: Boolean,
                         value: false,
                     },
                     userData: {
                         type: Object,
-                        value: null,
+                        observer: "handleUserData",
+                        value: function () {
+                            return GLOBAL_CONFIG.userData;
+                        },
                     },
                 };
             }
@@ -115,36 +76,76 @@
                 this.removeEventListener('iron-ajax-presend', this.handleAjaxCall);
             }
 
-            prepareUrl(url) {
-                return url[0] === '/' ? `${this.serverUrl}${url}` : url;
-            }
-
             handleFormCall(e) {
-                e.path[0].request.url = this.prepareUrl(e.path[0].request.url);
+                e.path[0].request.url = prepareUrl(e.path[0].request.url);
             }
 
             handleAjaxCall(e) {
                 console.log(e);
             }
 
+            handleUserData(user) {
+                if (user) {
+                    this.addLoggedSection(user);
+                } else {
+                    this.removeLoggedSection();
+                }
+            }
+
+            addLoggedSection(user) {
+                if (!this.loggedSectionNode) {
+                    this.loggedSectionNode = new LoggedSection(user);
+                    this.$.container.appendChild(this.loggedSectionNode);
+                }
+            }
+
+            removeLoggedSection() {
+                if (this.loggedSectionNode) {
+                    this.$.container.removeChild(this.loggedSectionNode);
+                    this.loggedSectionNode = null;
+                }
+            }
+
             handleLogin(e) {
-                this.userData = e.detail;
+                this.userData = GLOBAL_CONFIG.userData = e.detail;
+                localStorage.setItem("VWM_UserData", JSON.stringify(this.userData));
             }
 
             handleLogout() {
-                this.userData = null;
-            }
-
-            // noinspection JSMethodCanBeStatic
-            getSelectedPage(page) {
-                return page ? page : 'home';
-            }
-
-            _drawerSelected() {
-                if (!this.$.drawer.persistent) this.$.drawer.close();
+                this.userData = GLOBAL_CONFIG.userData = null;
+                localStorage.removeItem("VWM_UserData");
             }
         }
 
         window.customElements.define(FeApp.is, FeApp);
+
+
+        function prepareUrl(url) {
+            return url[0] === '/' && url[1] !== '/' ? `${SERVER_URL}${url}` : url;
+        }
+
+        function postData(url, data) {
+            // Default options are marked with *
+            return fetch(prepareUrl(url), {
+                body: serialize(data), // must match 'Content-Type' header
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+                redirect: 'follow', // manual, *follow, error
+                referrer: 'no-referrer', // *client, no-referrer
+            }).then(response => response.json()) // parses response to JSON
+        }
+
+        function serialize(obj) {
+            let str = [];
+            for (const p in obj)
+                if (obj.hasOwnProperty(p)) {
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                }
+            return str.join("&");
+        }
     </script>
 </dom-module>

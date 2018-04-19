@@ -36,8 +36,7 @@
 
             ready() {
                 super.ready();
-                fetch(`${SERVER_URL}/film-recommended`)
-                    .then(response => response.json())
+                postData(`/film/recommended`, {uid: GLOBAL_CONFIG.userData.id})
                     .then(list => {
                         this.recommended = list;
                     });

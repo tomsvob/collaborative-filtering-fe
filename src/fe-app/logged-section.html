@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="./admin-page.html">
+<link rel="import" href="./user-page.html">
+
+<dom-module id="logged-section">
+    <template>
+        <iron-pages selected="[[userData.userType]]" attr-for-selected="name">
+            <user-page name="USER" user-data="[[userData]]"></user-page>
+            <admin-page name="ADMIN"></admin-page>
+        </iron-pages>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class LoggedSection extends Polymer.Element {
+            static get is() {
+                return 'logged-section';
+            }
+
+            static get properties() {
+                return {
+                    _pageData: Object,
+                    authenticated: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    userData: {
+                        type: Object,
+                    },
+                };
+            }
+
+            constructor(userData) {
+                super();
+
+                this.userData = userData;
+            }
+        }
+
+        window.customElements.define(LoggedSection.is, LoggedSection);
+    </script>
+</dom-module>

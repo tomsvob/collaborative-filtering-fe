@@ -39,7 +39,7 @@
 
             static get observers() {
                 return [
-                    "newData(data.rate)"
+                    "newData(data.rating)"
                 ]
             }
 
@@ -50,17 +50,16 @@
             // noinspection JSUnusedGlobalSymbols
             updateRate(newRate) {
                 // noinspection EqualityComparisonWithCoercionJS
-                if (newRate && this.data && this.data.rate != newRate) {
+                if (newRate && this.data && this.data.rating != newRate) {
                     this.disabled = true;
                     const newValue = Number(newRate);
                     setTimeout(() => {
-                        this.set(['data', 'rate'], newValue);
+                        this.set(['data', 'rating'], newValue);
                         this.disabled = false;
                     }, 300);
                     // TODO: proper url
-                    // fetch(['updateRate', this.data.id, newValue].join('/')).then(() => {
-                    //     this.set(['data', 'rate'], newValue);
-                    // }).catch(alert);
+
+                    postData('/update-rating', {uid: GLOBAL_CONFIG.userData.id, fid: this.data.id, rating: newRate});
                 }
             }
         }

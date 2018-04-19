@@ -43,21 +43,16 @@
             }
 
             debouncedSearch(query) {
-                fetch(`/search/${query}`).then((response) => {
-                    // TODO: proper
-                    // this.searchList = JSON.stringify(response);
-                    this.searchList = [
-                        {name: 'A', id: 10,},
-                        {name: 'B', id: 20, rate: 2,},
-                        {name: 'C', id: 30,},
-                    ];
-                }).catch(alert);
+                postData(`/film/search`, {uid: GLOBAL_CONFIG.userData.id, query})
+                    .then(list => {
+                        this.searchList = list;
+                    });
             }
 
             search(query) {
                 clearTimeout(this.CT);
 
-                this.CT = setTimeout(this.debouncedSearch.bind(this, query), 200);
+                this.CT = setTimeout(this.debouncedSearch.bind(this, query), 400);
             }
         }
 
