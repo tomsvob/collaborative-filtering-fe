@@ -51,7 +51,7 @@
                         <paper-input label="Number of recommended films" name="numOfRecommended" value="10"></paper-input>
                         <paper-input label="Minimum number of matches" name="minNumOfMatches" value="7"></paper-input>
                         <button disabled$="[[loading]]">Update recommendations for users</button>
-                        <div>[[response]]</div>
+                        <div style="text-align: center">[[response]]</div>
                     </form>
                 </iron-form>
                 <paper-spinner active="[[loading]]">...</paper-spinner>
@@ -97,7 +97,7 @@
             }
 
             _handleFormResponse(e) {
-                this.response = JSON.stringify(e.detail.response);
+                this.response = `last update stats: ${JSON.stringify(e.detail.response)}`;
                 this.loading = false;
             }
         }
