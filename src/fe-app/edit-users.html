@@ -1,9 +1,15 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
 
+<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+
 <link rel="import" href="./catalog-list.html">
 
-<dom-module id="admin-page">
+<dom-module id="edit-users">
     <template>
         <style>
             .page-wrapper {
@@ -47,9 +53,9 @@
          * @customElement
          * @polymer
          */
-        class AdminPage extends Polymer.Element {
+        class EditUsers extends Polymer.Element {
             static get is() {
-                return 'admin-page';
+                return 'edit-users';
             }
 
             static get properties() {
@@ -59,6 +65,6 @@
             }
         }
 
-        customElements.define(AdminPage.is, AdminPage);
+        customElements.define(EditUsers.is, EditUsers);
     </script>
 </dom-module>

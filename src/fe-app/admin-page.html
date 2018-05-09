@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="./catalog-list.html">
 
@@ -22,27 +23,40 @@
                 border-radius: 3px;
                 font-size: 20px;
                 line-height: 40px;
-                width: 100px;
                 display: block;
                 margin: 15px auto;
             }
+
+            iron-form {
+                text-align: left;
+            }
         </style>
-        <h1>Admininstartion page</h1>
-        <div class="page-wrapper">
-            <iron-form>
-                <form method="post" action="/add-user">
-                    <paper-input label="Username" name="username"></paper-input>
-                    <button>Add</button>
-                </form>
-            </iron-form>
-        </div>
-        <div class="page-wrapper">
-            <iron-list items="[[users]]">
-                <template>
-                    <editable-user data="[[item]]"></editable-user>
-                </template>
-            </iron-list>
-        </div>
+
+        <app-drawer-layout fullbleed force-narrow>
+            <app-header-layout>
+                <app-header fixed slot="header">
+                    <div class="page-wrapper">
+                        <app-toolbar>
+                            <div main-title>Collaborative filtering administration page</div>
+                            <div class="user-name">[[userData.username]]</div>
+                            <paper-icon-button icon="icons:power-settings-new" on-tap="logout"></paper-icon-button>
+                        </app-toolbar>
+                    </div>
+                </app-header>
+            </app-header-layout>
+            <div class="page-wrapper" style="text-align: center;">
+                <iron-form on-iron-form-submit="_handleFormSubmit" on-iron-form-response="_handleFormResponse">
+                    <form method="post" action="/calculate-recommended">
+                        <paper-input label="Number of similar users" name="numOfSimilarUsers" value="25"></paper-input>
+                        <paper-input label="Number of recommended films" name="numOfRecommended" value="10"></paper-input>
+                        <paper-input label="Minimum number of matches" name="minNumOfMatches" value="7"></paper-input>
+                        <button disabled$="[[loading]]">Update recommendations for users</button>
+                        <div>[[response]]</div>
+                    </form>
+                </iron-form>
+                <paper-spinner active="[[loading]]">...</paper-spinner>
+            </div>
+        </app-drawer-layout>
     </template>
 
     <script>
@@ -58,16 +72,33 @@
             static get properties() {
                 return {
                     users: Array,
+                    loading: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    response: {
+                        type: String,
+                        value: "",
+                    }
                 };
             }
 
             ready() {
                 super.ready();
-                this.loadUsers();
             }
 
-            loadUsers() {
-                // fetch(`${SERVER_URL}/users`).then(res => res.json()).then(users => {this.users = users});
+            logout() {
+                console.log('logout');
+                this.dispatchEvent(new CustomEvent('user-logged-out', {bubbles: true, composed: true}));
+            }
+
+            _handleFormSubmit() {
+                this.loading = true;
+            }
+
+            _handleFormResponse(e) {
+                this.response = JSON.stringify(e.detail.response);
+                this.loading = false;
             }
         }
 
