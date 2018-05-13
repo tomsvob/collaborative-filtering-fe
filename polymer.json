@@ -1,4 +1,10 @@
 {
+  "entrypoint": "index.html",
+  "shell": "src/fe-app/fe-app.html",
+  "builds": [{
+    "preset": "es5-bundled",
+    "addServiceWorker": false
+  }],
   "lint": {
     "rules": [
       "polymer-2"
