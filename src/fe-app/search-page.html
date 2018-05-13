@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="./catalog-list.html">
 
@@ -14,6 +15,9 @@
         </style>
         <div class="page-wrapper">
             <paper-input label="Search" value="{{searchQuery}}" disabled="[[inputDisabled]]"></paper-input>
+            <div style="text-align: center;">
+                <paper-spinner active="[[loading]]">...</paper-spinner>
+            </div>
             <catalog-list list="[[searchList]]" title="Found films"></catalog-list>
         </div>
     </template>
@@ -30,29 +34,43 @@
 
             static get properties() {
                 return {
+                    loading: {
+                        type: Boolean,
+                        value: false,
+                    },
                     inputDisabled: Boolean,
-                    searchQuery: String,
+                    searchQuery: {
+                        type: String,
+                        value: "",
+                        observer: "search",
+                    },
                     searchList: Array
                 };
             }
 
-            static get observers() {
-                return [
-                    "search(searchQuery)"
-                ];
-            }
-
             debouncedSearch(query) {
+                this.loading = true;
+                const requestTime = this.lastRequest = Date.now();
                 postData(`/film/search`, {uid: GLOBAL_CONFIG.userData.id, query})
                     .then(list => {
-                        this.searchList = list;
+                        // ignore old request responses
+                        if (requestTime === this.lastRequest) {
+                            this.loading = false;
+                            this.searchList = list;
+                        }
                     });
             }
 
             search(query) {
-                clearTimeout(this.CT);
+                if (query.length > 2) {
+                    clearTimeout(this.CT);
 
-                this.CT = setTimeout(this.debouncedSearch.bind(this, query), 400);
+                    this.CT = setTimeout(this.debouncedSearch.bind(this, query), 400);
+                } else {
+                    this.loading = false;
+                    this.requestTime = Date.now();
+                    this.searchList = [];
+                }
             }
         }
 

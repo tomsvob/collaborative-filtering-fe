@@ -71,9 +71,9 @@
                             <paper-icon-button icon="icons:power-settings-new" on-tap="logout"></paper-icon-button>
                         </app-toolbar>
                         <paper-tabs selected="{{selectedPage}}" attr-for-selected="name" scrollable>
-                            <paper-tab name="home">Home</paper-tab>
-                            <paper-tab name="archive">Archiv</paper-tab>
                             <paper-tab name="search">Search</paper-tab>
+                            <paper-tab name="home">Recommended</paper-tab>
+                            <paper-tab name="archive">Rated</paper-tab>
                         </paper-tabs>
                     </div>
                 </app-header>
@@ -103,7 +103,7 @@
                     _pageData: Object,
                     selectedPage: {
                         type: String,
-                        value: 'home'
+                        value: 'search'
                     }
                 };
             }
