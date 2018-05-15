@@ -1,6 +1,7 @@
 # \<bi-vwm-fe\>
 
 Frontend application for Collaborative filtering project
+Backend - https://github.com/tomsvob/collaborative-filtering-be
 
 ## Install dependencies
 
@@ -25,13 +26,16 @@ $ yarn build
 This will create builds of your application in the `build/` directory, optimized to be served in production. You can then serve the built versions by giving `polymer serve` a folder to serve from:
 
 ```
-$ yarn polymer serve build/default
+$ yarn polymer serve build/es5-bundled
 ```
 
-## Running Tests
+## Overview
 
-```
-$ yarn polymer test
-```
+### Admin section
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+Manually start recommendation algorithm to update recommended films for each user.
+Admin can set parameters of algorithm.
+
+### User section
+
+User can search for films, display recommended and already rated films. User can update rating for each film in UI.
